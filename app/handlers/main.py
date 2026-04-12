@@ -63,6 +63,8 @@ async def main():
         url_path=webhook_path,
     )
 
-
+    if not WEBHOOK_URL:
+        raise RuntimeError("WEBHOOK_URL is not set")
+    
 if __name__ == "__main__":
     asyncio.run(main())
