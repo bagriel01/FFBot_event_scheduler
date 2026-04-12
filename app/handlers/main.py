@@ -1,5 +1,4 @@
 import logging
-import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
@@ -36,11 +35,17 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def main():
+# 🔥 MUST be synchronous
+def main():
     if not BOT_TOKEN:
-        raise RuntimeError("BOT_TOKEN is not set in the environment variables.")
+        raise RuntimeError("BOT_TOKEN is not set")
+
+    if not WEBHOOK_URL:
+        raise RuntimeError("WEBHOOK_URL is not set")
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    # Handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler(["Ping_at", "Ping"], ping))
     app.add_handler(CommandHandler("help", help_command))
@@ -51,20 +56,21 @@ async def main():
     webhook_path = f"/webhook/{BOT_TOKEN}"
     webhook_url = f"{WEBHOOK_URL}{webhook_path}"
 
-    await app.bot.delete_webhook(drop_pending_updates=True)
+    # Clean old webhook
+    app.bot.delete_webhook(drop_pending_updates=True)
 
-    await app.bot.set_webhook(webhook_url)
+    # Set webhook
+    app.bot.set_webhook(webhook_url)
 
     logger.info(f"Webhook set to: {webhook_url}")
 
-    await app.run_webhook(
+    # 🚀 Start webhook server (NO await)
+    app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
         url_path=webhook_path,
     )
 
-    if not WEBHOOK_URL:
-        raise RuntimeError("WEBHOOK_URL is not set")
-    
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
