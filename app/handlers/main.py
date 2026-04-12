@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
@@ -37,7 +38,7 @@ def main():
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-
+    # Handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler(["Ping_at", "Ping"], ping))
     app.add_handler(CommandHandler("help", help_command))
@@ -50,11 +51,15 @@ def main():
 
     logger.info(f"Starting webhook at {webhook_url}")
 
+    # 🔥 CRITICAL FIX FOR PYTHON 3.14
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
         url_path=webhook_path,
-        webhook_url=webhook_url, 
+        webhook_url=webhook_url,
     )
 
 
