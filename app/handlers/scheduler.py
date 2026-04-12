@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from multiprocessing import context
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Update
 from telegram.ext import (
     CallbackQueryHandler,
@@ -135,6 +136,7 @@ async def skip_pictures(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 
 async def confirm(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    
     chat = update.effective_chat
     chat_id = chat.id
     event_name = context.user_data["name"]
@@ -225,12 +227,20 @@ async def confirm(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         approval_status = (
             " No approver IDs are configured, so approval request was not sent."
         )
+        
+    pending = context.bot_data.setdefault("pending_approvals", {})
 
+    pending[request_id] = {
+    "group_chat_id": chat.id,
+    "message_id": sent_message_id.message_id,
+    "channel_id": channel_id,
+}
     context.user_data.clear()
     await update.message.reply_text(
         f"Event posted and pinned successfully.{approval_status}"
     )
     return ConversationHandler.END
+
 
 
 async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -277,6 +287,8 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
         )
 
     pending.pop(request_id, None)
+    print("REQUEST ID:", request_id)
+    print("PENDING:", context.bot_data.get("pending_approvals"))
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -376,14 +388,14 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 failed_approvals.append(approver_id)
 
         pending = context.bot_data.setdefault("pending_approvals", {})
-        pending[request_id] = {
-            "group_chat_id": chat_id,
-            "message_id": sent_message_id,
-            "channel_id": channel_id,
-        }
+    pending[request_id] = {
+    "group_chat_id": chat.id,
+    "message_id": replied.message_id,
+    "channel_id": channel_id,
+}
 
-        approval_status = " Approval request was sent to the approver's DM."
-        if failed_approvals:
+    approval_status = " Approval request was sent to the approver's DM."
+    if failed_approvals:
             approval_status += " However, some approver DMs failed. Make sure those users have started a chat with the bot."
     else:
         approval_status = " No approver IDs are configured, so approval request was not sent."
