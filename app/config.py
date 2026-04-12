@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 APPROVED_EVENT_CHANNEL_ID = os.getenv("APPROVED_EVENT_CHANNEL_ID")
