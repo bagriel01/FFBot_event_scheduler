@@ -52,8 +52,7 @@ def main():
         raise RuntimeError("WEBHOOK_URL is not set")
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
-
-    # Handlers
+    
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler(["Ping_at", "Ping"], ping))
     app.add_handler(CommandHandler("help", help_command))
@@ -63,12 +62,14 @@ def main():
 
     webhook_path = asyncio.run(setup_webhook(app))
 
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
         url_path=webhook_path,
     )
-
 
 if __name__ == "__main__":
     main()
