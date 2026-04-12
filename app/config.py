@@ -12,5 +12,4 @@ ADMIN_USER_IDS = [
     for user_id in os.getenv("ADMIN_USER_IDS", "").split(",")
     if user_id.strip().isdigit()
 ]
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.getenv("PORT", 10000))
