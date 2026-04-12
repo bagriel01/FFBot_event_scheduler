@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
@@ -28,14 +29,21 @@ async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Use /FFNewPost in a group to create a new event by providing details in a specific format.\n"
-        "Use /FFPost by replying to an existing message to pin it and send for approval.\n"
-        "The bot will forward the message to configured admins for approval.\n"
-        "Use /Ping to check if the bot is working."
+        "Use /FFNewPost in a group to create a new event...\n"
     )
 
+async def setup_webhook(app):
+    webhook_path = f"/webhook/{BOT_TOKEN}"
+    webhook_url = f"{WEBHOOK_URL}{webhook_path}"
 
-# 🔥 MUST be synchronous
+    await app.bot.delete_webhook(drop_pending_updates=True)
+    await app.bot.set_webhook(webhook_url)
+
+    logger.info(f"Webhook set to: {webhook_url}")
+
+    return webhook_path
+
+
 def main():
     if not BOT_TOKEN:
         raise RuntimeError("BOT_TOKEN is not set")
@@ -53,18 +61,8 @@ def main():
     app.add_handler(build_ffpost_handler())
     app.add_handler(build_approval_handler())
 
-    webhook_path = f"/webhook/{BOT_TOKEN}"
-    webhook_url = f"{WEBHOOK_URL}{webhook_path}"
+    webhook_path = asyncio.run(setup_webhook(app))
 
-    # Clean old webhook
-    app.bot.delete_webhook(drop_pending_updates=True)
-
-    # Set webhook
-    app.bot.set_webhook(webhook_url)
-
-    logger.info(f"Webhook set to: {webhook_url}")
-
-    # 🚀 Start webhook server (NO await)
     app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
