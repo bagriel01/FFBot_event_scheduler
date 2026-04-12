@@ -13,4 +13,4 @@ ADMIN_USER_IDS = [
     for user_id in os.getenv("ADMIN_USER_IDS", "").split(",")
     if user_id.strip().isdigit()
 ]
-PORT = int(os.getenv("PORT", 10000))
+PORT = int(os.getenv("PORT", 8443))
