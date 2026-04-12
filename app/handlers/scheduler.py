@@ -55,12 +55,12 @@ async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
     if not await is_user_admin(update, context):
         await update.message.reply_text(
-            "Only group administrators can create event posts."
+            "Sowwy, only group administrators can create event posts :c"
         )
         return ConversationHandler.END
 
     await update.message.reply_text(
-        "Please provide all event details in one message with the following format:\n\n"
+        "Please provide all event details in one message, copy and paste the following format and fill your info!:\n\n"
         "Header: [Event Name]\n"
         "Description: [Event Description]\n"
         "Date: [DD/MM/YYYY HH:MM]\n"
@@ -73,7 +73,7 @@ async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     text = update.message.text.strip()
     
-    # Parse the text
+
     lines = text.split('\n')
     data = {}
     for line in lines:
@@ -86,14 +86,14 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         elif line.startswith('Location:'):
             data['location'] = line.replace('Location:', '').strip()
     
-    # Validate
+
     if not all(key in data for key in ['name', 'description', 'datetime', 'location']):
         await update.message.reply_text(
             "Invalid format. Please include Header, Description, Date, and Location."
         )
         return NEWPOST_TEXT
     
-    # Validate date
+
     try:
         datetime.strptime(data['datetime'], "%d/%m/%Y %H:%M")
     except ValueError:

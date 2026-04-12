@@ -22,11 +22,37 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is online.")
+    await update.message.reply_text("Bot is online. Current Version is 1.0.1 Alpha")
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Help message...")
+    await update.message.reply_text(
+        "🆕 */FFNewPost*\n"
+        "Create a new event from scratch.\n"
+        "You will be asked to provide:\n"
+        "- Header (event name)\n"
+        "- Description\n"
+        "- Date and time (DD/MM/YYYY HH:MM)\n"
+        "- Location (Google Maps link)\n"
+        "After that, you can add pictures and confirm the post.\n\n"
+
+        "📨 */FFPost*\n"
+        "Use this by *replying to an existing message*.\n"
+        "The bot will:\n"
+        "- Pin the message\n"
+        "- Send it for approval to admins\n\n"
+
+
+        "⛔ */cancel*\n"
+        "Cancel the current event creation process.\n\n"
+
+        "🏓 */Ping*\n"
+        "Check if the bot is online.\n\n"
+
+        "⚠️ Notes:\n"
+        "- /FFNewPost and /FFPost only work in groups\n"
+        "- Only group admins can create or approve events\n"
+        "- Make sure the bot has permission to pin messages\n",)
 
 
 def main():
