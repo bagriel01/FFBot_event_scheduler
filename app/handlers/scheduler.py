@@ -89,7 +89,7 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 
     if not all(key in data for key in ['name', 'description', 'datetime', 'location']):
         await update.message.reply_text(
-            "Invalid format. Please include Header, Description, Date, and Location."
+            "Invalid format. Please include Header, Description, Date, and Location or type /cancel to abort."
         )
         return NEWPOST_TEXT
     

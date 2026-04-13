@@ -18,11 +18,11 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("FFBot is Running")
+    await update.message.reply_text("Welcome to FFBot! Add me to your group and pretty pwease give me admin permissions (all of them), promisse not to do anything malicious uwu")
 
 
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is online. Current Version is 1.0.1 Alpha")
+    await update.message.reply_text("Bot is online. Current Version is 1.0.3 Alpha")
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -64,7 +64,7 @@ def main():
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Handlers
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler(["Ping_at", "Ping"], ping))
     app.add_handler(CommandHandler("help", help_command))
@@ -77,7 +77,7 @@ def main():
 
     logger.info(f"Starting webhook at {webhook_url}")
 
-    # 🔥 CRITICAL FIX FOR PYTHON 3.14
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
