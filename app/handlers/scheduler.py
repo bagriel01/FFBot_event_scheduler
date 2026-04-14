@@ -269,7 +269,7 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
             await query.edit_message_text("✅ Event approved and forwarded to the channel.")
             await context.bot.send_message(
                 chat_id=approval["group_chat_id"],
-                text="The event has been approved and published.",
+                text="The event has been approved and published at https://t.me/FruityFur_Events! Check it out there!",
             )
         else:
             await query.edit_message_text(
@@ -283,7 +283,7 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
         await query.edit_message_text("❌ Event rejected and will not be sent to the channel.")
         await context.bot.send_message(
             chat_id=approval["group_chat_id"],
-            text="The event was rejected by the approver and was not sent to the channel.",
+            text="The event was rejected by the approver. Contact the bot owner at @thenightweaver for more info.",
         )
 
     pending.pop(request_id, None)
