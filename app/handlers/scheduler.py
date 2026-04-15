@@ -80,7 +80,6 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
                 "Please reply to the original message with the event details. Type /cancel to abort."
             )
             context.user_data["warned_wrong_reply"] = True
-            return NEWPOST_TEXT
     text = update.message.text.strip()
     lines = text.split('\n')
     data = {}
