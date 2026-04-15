@@ -18,14 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Welcome to FFBot! Add me to your group and pretty pwease give me admin permissions (all of them), promisse not to do anything malicious uwu")
+    await update.message.reply_text("Welcome to FFBot! Add me to your group and pretty pwease give me admin permissions (all of them) so i can properly work! I promisse that i wont do anything malicious uwu")
 
 
-async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is online. Current Version is 1.0.3 Alpha")
+async def FFPing(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Bot is online. Current Version is 1.0.4 Alpha")
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🆕 */FFNewPost*\n"
         "Create a new event from scratch.\n"
@@ -46,28 +46,29 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "⛔ */cancel*\n"
         "Cancel the current event creation process.\n\n"
 
-        "🏓 */Ping*\n"
+        "🏓 */FFPing*\n"
         "Check if the bot is online.\n\n"
 
         "⚠️ Notes:\n"
         "- /FFNewPost and /FFPost only work in groups\n"
+        "- /FFNewPost requires you to follow a set structure\n"
         "- Only group admins can create or approve events\n"
         "- Make sure the bot has permission to pin messages\n",)
 
 
 def main():
     if not BOT_TOKEN:
-        raise RuntimeError("BOT_TOKEN is not set")
+        raise RuntimeError("Epic Sadface: BOT_TOKEN is not set. GG")
 
     if not WEBHOOK_URL:
-        raise RuntimeError("WEBHOOK_URL is not set")
+        raise RuntimeError("Epic Sadface: WEBHOOK_URL is not set. GG")
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler(["Ping_at", "Ping"], ping))
-    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("FFPing_at", FFHelp))
+    app.add_handler(CommandHandler("FFHelp_at", FFHelp))
     app.add_handler(build_ffnewpost_handler())
     app.add_handler(build_ffpost_handler())
     app.add_handler(build_approval_handler())

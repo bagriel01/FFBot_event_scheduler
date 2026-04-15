@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from multiprocessing import context
+from turtle import update
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Update
 from telegram.ext import (
     CallbackQueryHandler,
@@ -49,6 +50,9 @@ async def is_user_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> b
 async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     chat = update.effective_chat
 
+    sent_msg = await update.message.reply_text("...")
+    context.user_data["expected_reply_to"] = sent_msg.message_id
+
     if chat.type not in ("group", "supergroup"):
         await update.message.reply_text("/FFNewPost can only be used in groups.")
         return ConversationHandler.END
@@ -58,7 +62,7 @@ async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             "Sowwy, only group administrators can create event posts :c"
         )
         return ConversationHandler.END
-
+    
     await update.message.reply_text(
         "Please provide all event details in one message, copy and paste the following format and fill your info!:\n\n"
         "Header: [Event Name]\n"
@@ -69,11 +73,17 @@ async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     )
     return NEWPOST_TEXT
 
-
 async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    text = update.message.text.strip()
-    
+    reply = update.message.reply_to_message
+    expected_id = context.user_data.get("expected_reply_to")
 
+    if not reply.message_id != expected_id:
+        await update.message.reply_text(
+            "Please reply to the original bot message with the event details."
+     )
+        return NEWPOST_TEXT
+
+    text = update.message.text.strip()
     lines = text.split('\n')
     data = {}
     for line in lines:
@@ -87,20 +97,18 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
             data['location'] = line.replace('Location:', '').strip()
     
 
-    if not all(key in data for key in ['name', 'description', 'datetime', 'location']):
-        await update.message.reply_text(
-            "Invalid format. Please include Header, Description, Date, and Location or type /cancel to abort."
-        )
+    # if not all(key in data for key in ['name', 'description', 'datetime', 'location']):
+    #     await update.message.reply_text(
+    #         "Invalid format. Please include Header, Description, Date, and Location or type /cancel to abort."
+    #     )
         return NEWPOST_TEXT
-    
-
-    try:
-        datetime.strptime(data['datetime'], "%d/%m/%Y %H:%M")
-    except ValueError:
-        await update.message.reply_text(
-            "Invalid date format. Use DD/MM/YYYY HH:MM."
-        )
-        return NEWPOST_TEXT
+    # try:
+    #     datetime.strptime(data['datetime'], "%d/%m/%Y %H:%M")
+    # except ValueError:
+    #     await update.message.reply_text(
+    #         "Invalid date format. Use DD/MM/YYYY HH:MM."
+    #     )
+    #     return NEWPOST_TEXT
     
     context.user_data.update(data)
     context.user_data["photo_file_ids"] = []
@@ -215,19 +223,7 @@ async def confirm(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
                 logger.exception("Failed to send approval DM to %s", approver_id)
                 failed_approvals.append(approver_id)
 
-        approval_status = " Approval request was sent to the approver's DM."
-        if failed_approvals:
-            approval_status += (
-                " However, some approver DMs failed. Make sure those users have started a chat with the bot."
-            )
-
-        if not APPROVED_EVENT_CHANNEL_ID:
-            approval_status += " No approval destination channel is configured yet."
-    else:
-        approval_status = (
-            " No approver IDs are configured, so approval request was not sent."
-        )
-        
+        approval_status = "Approval request was sent to the approver's DM."
     pending = context.bot_data.setdefault("pending_approvals", {})
 
     pending[request_id] = {
@@ -270,14 +266,7 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
             await context.bot.send_message(
                 chat_id=approval["group_chat_id"],
                 text="The event has been approved and published at https://t.me/FruityFur_Events! Check it out there!",
-            )
-        else:
-            await query.edit_message_text(
-                "✅ Event approved, but no approval destination channel is configured."
-            )
-            await context.bot.send_message(
-                chat_id=approval["group_chat_id"],
-                text="The event has been approved, but the approval channel is not configured.",
+            
             )
     else:
         await query.edit_message_text("❌ Event rejected and will not be sent to the channel.")
