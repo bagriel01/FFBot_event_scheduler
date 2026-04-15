@@ -52,7 +52,7 @@ async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "⚠️ Notes:\n"
         "- /FFNewPost and /FFPost only work in groups\n"
         "- /FFNewPost requires you to follow a set structure\n"
-        "- Only group admins can create or approve events\n"
+        "- Only group admins can create\n"
         "- Make sure the bot has permission to pin messages\n",)
 
 
