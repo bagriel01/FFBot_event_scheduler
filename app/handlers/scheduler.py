@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from multiprocessing import context
-from turtle import update
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Update
 from telegram.ext import (
     CallbackQueryHandler,
