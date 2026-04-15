@@ -77,7 +77,7 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     if not reply or reply.message_id != expected_id:
        if not context.user_data.get("warned_wrong_reply"):
             await update.message.reply_text(
-                "Please reply to the original message with the event details. Type /cancel to abort."
+                "Please reply to the original message with the event details. Try again /FFNewPost and answer it with the info!"
             )
             context.user_data["warned_wrong_reply"] = True
             return ConversationHandler.END

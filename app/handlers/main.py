@@ -22,7 +22,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def FFPing(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is online. Current Version is 1.0.4 Alpha")
+    await update.message.reply_text("Bot is online. Current Version is 1.0.4 Alpha (Stable)")
 
 
 async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
