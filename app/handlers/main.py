@@ -67,8 +67,8 @@ def main():
 
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("FFPing_at", FFHelp))
-    app.add_handler(CommandHandler("FFHelp_at", FFHelp))
+    app.add_handler(CommandHandler("FFPing", FFPing))
+    app.add_handler(CommandHandler("FFHelp", FFHelp))
     app.add_handler(build_ffnewpost_handler())
     app.add_handler(build_ffpost_handler())
     app.add_handler(build_approval_handler())

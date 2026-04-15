@@ -48,10 +48,7 @@ async def is_user_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> b
 
 async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     chat = update.effective_chat
-
-    sent_msg = await update.message.reply_text("...")
-    context.user_data["expected_reply_to"] = sent_msg.message_id
-
+  
     if chat.type not in ("group", "supergroup"):
         await update.message.reply_text("/FFNewPost can only be used in groups.")
         return ConversationHandler.END
@@ -62,7 +59,7 @@ async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         )
         return ConversationHandler.END
     
-    await update.message.reply_text(
+    sent_msg = await update.message.reply_text(
         "Please provide all event details in one message, copy and paste the following format and fill your info!:\n\n"
         "Header: [Event Name]\n"
         "Description: [Event Description]\n"
@@ -70,13 +67,14 @@ async def ffnewpost_start(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         "Location: [Location with Google Maps link]\n\n"
         "Reply to this message with the details."
     )
+    
+    context.user_data["expected_reply_to"] = sent_msg.message_id
     return NEWPOST_TEXT
-
 async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     reply = update.message.reply_to_message
     expected_id = context.user_data.get("expected_reply_to")
 
-    if not reply.message_id != expected_id:
+    if not reply or reply.message_id != expected_id:
         await update.message.reply_text(
             "Please reply to the original bot message with the event details."
      )
@@ -96,19 +94,11 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
             data['location'] = line.replace('Location:', '').strip()
     
 
-    # if not all(key in data for key in ['name', 'description', 'datetime', 'location']):
-    #     await update.message.reply_text(
-    #         "Invalid format. Please include Header, Description, Date, and Location or type /cancel to abort."
-    #     )
+    if not all(key in data for key in ['name', 'description', 'datetime', 'location']):
+        await update.message.reply_text(
+             "Invalid format. Please include Header, Description, Date, and Location or type /cancel to abort."
+         )
         return NEWPOST_TEXT
-    # try:
-    #     datetime.strptime(data['datetime'], "%d/%m/%Y %H:%M")
-    # except ValueError:
-    #     await update.message.reply_text(
-    #         "Invalid date format. Use DD/MM/YYYY HH:MM."
-    #     )
-    #     return NEWPOST_TEXT
-    
     context.user_data.update(data)
     context.user_data["photo_file_ids"] = []
 
@@ -227,7 +217,7 @@ async def confirm(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
     pending[request_id] = {
     "group_chat_id": chat.id,
-    "message_id": sent_message_id.message_id,
+   "message_id": sent_message_id,
     "channel_id": channel_id,
 }
     context.user_data.clear()
