@@ -75,11 +75,12 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     expected_id = context.user_data.get("expected_reply_to")
 
     if not reply or reply.message_id != expected_id:
-        await update.message.reply_text(
-            "Please reply to the original bot message with the event details."
-     )
-        return NEWPOST_TEXT
-
+       if not context.user_data.get("warned_wrong_reply"):
+            await update.message.reply_text(
+                "Please reply to the original message with the event details. Type /cancel to abort."
+            )
+            context.user_data["warned_wrong_reply"] = True
+            return NEWPOST_TEXT
     text = update.message.text.strip()
     lines = text.split('\n')
     data = {}
@@ -92,8 +93,6 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
             data['datetime'] = line.replace('Date:', '').strip()
         elif line.startswith('Location:'):
             data['location'] = line.replace('Location:', '').strip()
-    
-
     if not all(key in data for key in ['name', 'description', 'datetime', 'location']):
         await update.message.reply_text(
              "Invalid format. Please include Header, Description, Date, and Location or type /cancel to abort."
@@ -101,7 +100,6 @@ async def newpost_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         return NEWPOST_TEXT
     context.user_data.update(data)
     context.user_data["photo_file_ids"] = []
-
     await update.message.reply_text(
         "Details saved. Send one or more pictures to illustrate the event, or type /skip if you want to continue without pictures."
     )
@@ -373,10 +371,6 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 }
 
     approval_status = " Approval request was sent to the approver's DM."
-    if failed_approvals:
-            approval_status += " However, some approver DMs failed. Make sure those users have started a chat with the bot."
-    else:
-        approval_status = " No approver IDs are configured, so approval request was not sent."
 
     await update.message.reply_text(f"Message pinned and sent for approval.{approval_status}")
 
