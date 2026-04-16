@@ -13,4 +13,4 @@ Guides the process of post creation and sends the post to a channel after being 
 Future Features:
 
 /ThisMonth
-SHows the events published at the channel happening at the current month
+Shows the events published at the channel happening at the current month
