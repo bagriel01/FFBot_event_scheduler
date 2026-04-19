@@ -29,7 +29,7 @@ def save_post(date: dt, message_id: int, chat_id: int):
     })
    save_data(data)
 
-def get_posts_for_month(year: int, month: int):
+def get_posts_this_month(year: int, month: int):
     data = load_data()
     month_data = data.get(str(year), {}).get(f"{month:02d}", {})
 
