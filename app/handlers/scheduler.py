@@ -46,6 +46,54 @@ async def is_user_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> b
     administrators = await context.bot.get_chat_administrators(chat.id)
     return any(member.user and member.user.id == user.id for member in administrators)
 
+async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    if not query or not query.data:
+        return
+
+    await query.answer()
+    action, request_id = query.data.split(":", 1)
+    pending = context.bot_data.get("pending_approvals", {})
+    approval = pending.get(request_id)
+
+    if not approval:
+        await query.edit_message_text("This approval request is no longer available.")
+        return
+
+    if action == "approve":
+        if approval.get("channel_id"):
+            forwarded = await context.bot.forward_message(
+                chat_id=approval["channel_id"],
+                from_chat_id=approval["group_chat_id"],
+                message_id=approval["message_id"]
+            )
+            event_date = dt.strptime(approval["event_date"], "%d/%m/%Y")
+            save_post(
+                date=event_date,
+                message_id=forwarded.message_id,
+                chat_id=approval["channel_id"],
+            )
+            await query.edit_message_text("✅ Event approved and forwarded to the channel.")
+            await context.bot.send_message(
+                chat_id=approval["group_chat_id"],
+                text="The event has been approved and published at https://t.me/FruityFur_Events! Check it out there!",
+            )
+    else:
+        await query.edit_message_text("❌ Event rejected and will not be sent to the channel.")
+        await context.bot.send_message(
+            chat_id=approval["group_chat_id"],
+            text="The event was rejected by the approver. Contact the bot owner at @thenightweaver for more info.",
+        )
+
+    pending.pop(request_id, None)
+
+
+def build_approval_handler() -> CallbackQueryHandler:
+    return CallbackQueryHandler(
+        handle_approval_callback,
+        pattern=r"^(approve|reject):",
+    )
+
 async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     chat = update.effective_chat
     message = update.message

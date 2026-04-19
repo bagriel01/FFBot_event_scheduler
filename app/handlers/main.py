@@ -3,8 +3,9 @@ import asyncio
 import datetime as dt
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+import app
 from app.config import BOT_TOKEN, WEBHOOK_URL, PORT
-from app.handlers.scheduler import build_ffpost_handler
+from app.handlers.scheduler import build_ffpost_handler, build_approval_handler
 from app.handlers.thismonth import build_ffthismonth_handler
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -59,6 +60,7 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("FFPing", FFPing))
     app.add_handler(CommandHandler("FFHelp", FFHelp))
+    app.add_handler(build_approval_handler())
     app.add_handler(build_ffpost_handler())
     app.add_handler(build_ffthismonth_handler())
 
