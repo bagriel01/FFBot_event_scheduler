@@ -134,14 +134,14 @@ async def ffpost_receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE
     expected_id = context.user_data.get("ffpost_expected_reply")
 
     if not reply or reply.message_id != expected_id:
-        await update.message.reply_text("Please reply directly to the date request message.")
-        return FFPOST_DATE
+        await update.message.reply_text("Oops, you should reply to the date request message. Try again owo")
+        return ConversationHandler.END
 
     try:
         post_date = dt.strptime(update.message.text.strip(), "%d/%m/%Y")
     except ValueError:
-        await update.message.reply_text("Invalid format, please use DD/MM/YYYY:")
-        return FFPOST_DATE
+        await update.message.reply_text("Invalid format, please use DD/MM/YYYY. Try again owo")
+        return ConversationHandler.END
 
     chat_id = context.user_data["ffpost_chat_id"]
     replied_id = context.user_data["ffpost_replied_id"]
