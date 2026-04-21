@@ -2,10 +2,13 @@ import json
 import os
 from datetime import datetime as dt
 
-STORAGE_FILE = "thismonth_storage.json"
+STORAGE_FILE = "/data/event_storage.json"
 
 def load_data():
     if not os.path.exists(STORAGE_FILE):
+        os.makedirs(os.path.dirname(STORAGE_FILE), exist_ok=True)
+        with open(STORAGE_FILE, "w", encoding="utf-8") as f:
+            json.dump({}, f)
         return {}
     with open(STORAGE_FILE, "r", encoding="utf-8") as f:
         content = f.read().strip()
