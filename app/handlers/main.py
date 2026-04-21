@@ -1,6 +1,7 @@
 import logging
 import asyncio
-import datetime as dt
+from datetime import datetime as dt
+import pytz
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import app
@@ -19,8 +20,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def FFPing(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"Bot is online as of {dt.datetime.now()}. Current Version is 1.1L (Banana)")
-
+    tz = pytz.timezone("America/Sao_Paulo")
+    now = dt.now(tz)
+    await update.message.reply_text(f"Bot is online as of {now.strftime('%d/%m/%Y %H:%M')} (Brasília time). Current Version is 1.1.2L (Banana-Split)")
 
 async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
