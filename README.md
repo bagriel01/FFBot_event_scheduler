@@ -5,6 +5,7 @@ Features:
 - Group admin replies to an existing message with `/FFPost` to pin it and send for approval.
 - The bot forwards the message to configured admins for approval.
 - After approval, the message is forwarded to the channel.
+  
 `/FFThisMonth`
 - Allows group admins to forward the posts for events scheduled at this month
 
