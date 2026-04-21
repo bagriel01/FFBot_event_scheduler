@@ -1,6 +1,6 @@
 import logging
 import asyncio
-import datetime as dt
+from datetime import datetime as dt
 import pytz
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
