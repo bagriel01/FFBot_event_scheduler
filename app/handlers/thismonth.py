@@ -18,18 +18,18 @@ async def ffthismonth(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update.effective_chat
 
     if chat.type not in ("group", "supergroup"):
-        await update.message.reply_text("/FFThisMonth can only be used in groups, sowwy owo")
+        await update.message.reply_text("/FFThisMonth só pode ser utilizado em grupos, sowwy owo")
         return
 
     if not await is_user_admin(update, context):
-        await update.message.reply_text("Only group administrators can use /FFThisMonth, sowwy uwu")
+        await update.message.reply_text("Somente administradores podem usar /FFThisMonth, sowwy uwu")
         return
 
     now = dt.now()
     posts = get_posts_this_month(now.year, now.month)
 
     if not posts:
-        await update.message.reply_text("No events scheduled for this month yet. Schedule your own with @FruityFur_Bot! :3")
+        await update.message.reply_text("Não há eventos agendados para este mês ainda. Agende o seu com @FruityFur_Bot! :3")
         return
     await update.message.reply_text(
         f"Events for {now.strftime('%B %Y')}:",
