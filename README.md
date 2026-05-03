@@ -1,4 +1,4 @@
-the FFBot (FruityFur Bot) is an event scheduling assistant for Fur Meets and Furry Events. It helps group admins create event posts, pin them in the group, request approval by DM, and then publish approved events into a central channel.
+the FFBot (FruityFur Bot) is an event scheduling assistant for Brazilian Fur Meets and Furry Events. It helps group admins create event posts, pin them in the group, request approval by DM, and then publish approved events into a central channel.
 
 Features:
 `/FFPost`
@@ -19,5 +19,5 @@ Setup:
 2. Install dependencies: pip install python-telegram-bot python-dotenv
 3. Run with python run.py
 
-Current version is 1.1L(Banana)
+Current version is 1.1.3L(Banana-Sorbet)
 

@@ -16,45 +16,44 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Welcome to FFBot! Add me to your group and pretty pwease give me admin permissions (all of them) so i can properly work! I promisse that i wont do anything malicious uwu")
+    await update.message.reply_text("Boas vindas e obrigado por utilizar o FFBot! Para começar, me adicione no seu grupo e me dê as permissões de ADM (todas). Prometo não fazer nada malicioso uwu")
 
 
 async def FFPing(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tz = pytz.timezone("America/Sao_Paulo")
     now = dt.now(tz)
-    await update.message.reply_text(f"Bot is online as of {now.strftime('%d/%m/%Y %H:%M')} (Brasília time). Current Version is 1.1.2L (Banana-Split)")
+    await update.message.reply_text(f"Bot está online as {now.strftime('%d/%m/%Y %H:%M')} (Horário de Brasília). Versão atual do bot é 1.1.3L (Banana-Sorbet)")
 
 async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
        
         "📨 */FFPost*\n"
-        "Use this by *replying to an existing message*.\n"
-        "The bot will:\n"
-        "- Pin the message\n"
-        "- Send it for approval to admins\n\n"
+        "Use essa função para criar o evento.\n\n"
+        "Crie um post em seu grupo contendo as informações de evento;\n\n"
+        "Responda a mensagem do evento com /FFPost para agendar a publicação do evento pelo bot;\n\n"
+        "O bot irá solicitar a data do evento e enviará o post para ser aprovado!\n\n"
 
         "📅 */FFThisMonth*\n"
-        "Show events for the current month.\n\n"
+        "Use essa função para mostrar os eventos do mês atual publicados pelo bot.\n\n"
 
         "⛔ */cancel*\n"
-        "Cancel the current event creation process.\n\n"
+        "Cancela a função de criação de evento.\n\n"
 
         "🏓 */FFPing*\n"
-        "Check if the bot is online.\n\n"
+        "Verifica se o bot está online e mostra a versão atual.\n\n"
 
-        "⚠️ Notes:\n"
-        "- /FFPost and /FFThisMonth only work in groups\n"
-        "- Only group admins can use /FFThisMonth\n"
-        "- There's a Limit of one post a day for each group\n"
-        "- Make sure the bot has permission to pin messages\n",)
+        "⚠️ Notas: \n"
+        "- /FFPost e /FFThisMonth só funcionam em grupos.\n"
+        "- Apenas administradores do grupo podem usar as funções.\n"
+        "- Certifique-se de que o bot tenha permissão para fixar mensagens\n",)
 
 
 def main():
     if not BOT_TOKEN:
-        raise RuntimeError("Epic Sadface: BOT_TOKEN is not set. GG")
+        raise RuntimeError("Epic Sadface: BOT_TOKEN não está definido. GG")
 
     if not WEBHOOK_URL:
-        raise RuntimeError("Epic Sadface: WEBHOOK_URL is not set. GG")
+        raise RuntimeError("Epic Sadface: WEBHOOK_URL não está definido. GG")
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -69,7 +68,7 @@ def main():
     webhook_path = f"/webhook/{BOT_TOKEN}"
     webhook_url = f"{WEBHOOK_URL}{webhook_path}"
 
-    logger.info(f"Starting webhook at {webhook_url}")
+    logger.info(f"Iniciando Webhook em {webhook_url}")
 
 
     loop = asyncio.new_event_loop()

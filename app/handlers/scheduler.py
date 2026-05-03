@@ -57,7 +57,7 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
     approval = pending.get(request_id)
 
     if not approval:
-        await query.edit_message_text("This approval request is no longer available.")
+        await query.edit_message_text("Esse request não está mais disponível.")
         return
 
     if action == "approve":
@@ -73,16 +73,16 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
                 message_id=forwarded.message_id,
                 chat_id=approval["channel_id"],
             )
-            await query.edit_message_text("✅ Event approved and forwarded to the channel.")
+            await query.edit_message_text("✅ Evento aprovado e publicado no canal!")
             await context.bot.send_message(
                 chat_id=approval["group_chat_id"],
-                text="The event has been approved and published at https://t.me/FruityFur_Events! Check it out there!",
+                text="O evento foi aprovado e encaminhado para o canal https://t.me/FruityFur_Events! cheque seu post lá!",
             )
     else:
-        await query.edit_message_text("❌ Event rejected and will not be sent to the channel.")
+        await query.edit_message_text("❌ Evento rejeitado e não será enviado para o canal.")
         await context.bot.send_message(
             chat_id=approval["group_chat_id"],
-            text="The event was rejected by the approver. Contact the bot owner at @thenightweaver for more info.",
+            text="O evento foi rejeitado pelo aprovador. Entre em contato com o proprietário do bot em @thenightweaver para mais informações.",
         )
 
     pending.pop(request_id, None)
@@ -99,15 +99,15 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     message = update.message
 
     if chat.type not in ("group", "supergroup"):
-        await update.message.reply_text("/FFPost can only be used in groups.")
+        await update.message.reply_text("/FFPost só pode ser utilizado em grupos, sowwy owo")
         return ConversationHandler.END
 
     if not await is_user_admin(update, context):
-        await update.message.reply_text("Only group administrators can use /FFPost, sowwy uwu")
+        await update.message.reply_text("Somente administradores podem usar /FFPost, sowwy uwu")
         return ConversationHandler.END
 
     if not message.reply_to_message:
-        await update.message.reply_text("Oops, you should reply to a message when using /FFPost! Try again owo")
+        await update.message.reply_text("Oops, você precisa responder a uma mensagem para usar /FFPost! tente novamente owo")
         return ConversationHandler.END 
 
     replied = message.reply_to_message
@@ -122,7 +122,7 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["ffpost_post_text"] = post_text
 
     sent = await update.message.reply_text(
-        "Please reply to this message with the event date in the format DD/MM/YYYY:"
+        "Por favor, responda essa mensagem com a data do seu evento no formato DD/MM/AAAA:"
     )
     context.user_data["ffpost_expected_reply"] = sent.message_id
 
@@ -134,13 +134,13 @@ async def ffpost_receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE
     expected_id = context.user_data.get("ffpost_expected_reply")
 
     if not reply or reply.message_id != expected_id:
-        await update.message.reply_text("Oops, you should reply to the date request message. Try again owo")
+        await update.message.reply_text("Oops, você deve responder à mensagem de solicitação de data. Tente novamente owo")
         return ConversationHandler.END
 
     try:
         post_date = dt.strptime(update.message.text.strip(), "%d/%m/%Y")
     except ValueError:
-        await update.message.reply_text("Invalid format, please use DD/MM/YYYY. Try again owo")
+        await update.message.reply_text("Formato inválido, por favor use DD/MM/AAAA. Tente novamente owo")
         return ConversationHandler.END
 
     chat_id = context.user_data["ffpost_chat_id"]
@@ -171,11 +171,11 @@ async def ffpost_receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE
                 )
                 await context.bot.send_message(
                     chat_id=approver_id,
-                    text="Approve or reject this event?",
+                    text="Aprovar ou rejeitar este evento?",
                     reply_markup=keyboard,
                 )
             except Exception:
-                logger.exception("Failed to send approval DM to %s", approver_id)
+                logger.exception("Falha em encaminhar a mensagem para %s", approver_id)
 
         pending = context.bot_data.setdefault("pending_approvals", {})
         pending[request_id] = {
@@ -186,7 +186,7 @@ async def ffpost_receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE
         }
 
     context.user_data.clear()
-    await update.message.reply_text("Message pinned and sent for approval. Approval request was sent to the approver's DM.")
+    await update.message.reply_text("Mensagem fixada e enviada para validação. Solicitação de aprovação foi enviada para a DM do dono do bot.")
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
