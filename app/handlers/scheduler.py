@@ -76,7 +76,7 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
             await query.edit_message_text("✅ Evento aprovado e publicado no canal!")
             await context.bot.send_message(
                 chat_id=approval["group_chat_id"],
-                text="O evento foi aprovado e encaminhado para o canal https://t.me/FruityFur_Events! cheque seu post lá!",
+                text="O evento foi aprovado e encaminhado para o canal: https://t.me/FruityFur_Events!. Cheque seu post lá!",
             )
     else:
         await query.edit_message_text("❌ Evento rejeitado e não será enviado para o canal.")
@@ -99,15 +99,15 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     message = update.message
 
     if chat.type not in ("group", "supergroup"):
-        await update.message.reply_text("/FFPost só pode ser utilizado em grupos, sowwy owo")
+        await update.message.reply_text("/FFPost só pode ser utilizado em grupos, sowwy owo.")
         return ConversationHandler.END
 
     if not await is_user_admin(update, context):
-        await update.message.reply_text("Somente administradores podem usar /FFPost, sowwy uwu")
+        await update.message.reply_text("Somente administradores podem usar /FFPost, sowwy uwu.")
         return ConversationHandler.END
 
     if not message.reply_to_message:
-        await update.message.reply_text("Oops, você precisa responder a uma mensagem para usar /FFPost! tente novamente owo")
+        await update.message.reply_text("Oops, você precisa responder a uma mensagem para usar /FFPost! tente novamente owo.")
         return ConversationHandler.END 
 
     replied = message.reply_to_message
@@ -134,13 +134,13 @@ async def ffpost_receive_date(update: Update, context: ContextTypes.DEFAULT_TYPE
     expected_id = context.user_data.get("ffpost_expected_reply")
 
     if not reply or reply.message_id != expected_id:
-        await update.message.reply_text("Oops, você deve responder à mensagem de solicitação de data. Tente novamente owo")
+        await update.message.reply_text("Oops, você deve responder à mensagem de solicitação de data. Tente novamente owo.")
         return ConversationHandler.END
 
     try:
         post_date = dt.strptime(update.message.text.strip(), "%d/%m/%Y")
     except ValueError:
-        await update.message.reply_text("Formato inválido, por favor use DD/MM/AAAA. Tente novamente owo")
+        await update.message.reply_text("Formato inválido, por favor use DD/MM/AAAA. Tente novamente owo.")
         return ConversationHandler.END
 
     chat_id = context.user_data["ffpost_chat_id"]

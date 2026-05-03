@@ -16,13 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Boas vindas e obrigado por utilizar o FFBot! Para começar, me adicione no seu grupo e me dê as permissões de ADM (todas). Prometo não fazer nada malicioso uwu")
+    await update.message.reply_text("Boas vindas e obrigado por utilizar o FFBot! Para começar, me adicione no seu grupo e me dê as permissões de ADM (todas). Prometo não fazer nada malicioso uwu.")
 
 
 async def FFPing(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tz = pytz.timezone("America/Sao_Paulo")
     now = dt.now(tz)
-    await update.message.reply_text(f"Bot está online as {now.strftime('%d/%m/%Y %H:%M')} (Horário de Brasília). Versão atual do bot é 1.1.3L (Banana-Sorbet)")
+    await update.message.reply_text(f"Bot está online, Data: {now.strftime('%d/%m/%Y %H:%M')} (Horário de Brasília). Versão atual do bot é 1.1.3L (Banana-Sorbet)")
 
 async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
