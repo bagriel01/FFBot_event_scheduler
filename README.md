@@ -1,23 +1,39 @@
-the FFBot (FruityFur Bot) is an event scheduling assistant for Brazilian Fur Meets and Furry Events. It helps group admins create event posts, pin them in the group, request approval by DM, and then publish approved events into a central channel.
+o FFBot é um bot que auxilia furmeets brasileiros a agendar eventos e publicar eles de forma automatizada, para que as pessoas saibam quando e aonde estão acontecendo furmeets ou eventos da furry fandom brasileira.
 
 Features:
-`/FFPost`
-- Group admin replies to an existing message with `/FFPost` to pin it and send for approval.
-- The bot forwards the message to configured admins for approval.
-- After approval, the message is forwarded to the channel.
-  
-`/FFThisMonth`
-- Allows group admins to forward the posts for events scheduled at this month
+📨 */FFPost*
+Use essa função para criar o evento.
 
-Config:
-- `BOT_TOKEN` - Telegram bot token.
-- `APPROVED_EVENT_CHANNEL_ID` - channel where approved events will be posted.
-- `ADMIN_USER_IDS` - comma-separated Telegram user IDs that receive approval requests by DM.
+Crie um post em seu grupo contendo as informações de evento;
+
+Responda a mensagem do evento com /FFPost para agendar a publicação do evento pelo bot;
+
+O bot irá solicitar a data do evento e enviará o post para ser aprovado!
+
+📅 */FFThisMonth*
+Use essa função para mostrar os eventos do mês atual publicados pelo bot.
+
+🗑️ */FFRemove*
+Responda a mensagem original do evento com este comando para removê-lo do canal e do registro.
+
+⛔️ */cancel*
+Cancela a função de criação de evento.
+
+🏓 */FFPing*
+Verifica se o bot está online e mostra a versão atual.
+
+⚠️ Notas: 
+- /FFPost só funcionam em grupos ou grupos de canais.
+- /FFThisMonth só pode ser usado em grupo por administradores, usuários podem chamar essa mensagem pela dm do bot.
+- Apenas administradores do grupo podem usar funções.
+- Certifique-se de que o bot tenha permissão para fixar mensagens
 
 Setup:
-1. Create a .env file with the required variables.
-2. Install dependencies: pip install python-telegram-bot python-dotenv
-3. Run with python run.py
+1. Crie um arquivo .env com as variáveis necessárias.
+2. Instale as dependencies: pip install python-telegram-bot python-dotenv
+3. Rode com python run.py (ou run_local.py)
 
-Current version is 1.1.3L(Banana-Sorbet)
 
+- Versão atual é a 1.2L(Orange)
+
+- 
