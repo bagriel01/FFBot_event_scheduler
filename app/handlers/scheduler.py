@@ -72,6 +72,8 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
                 date=event_date,
                 message_id=forwarded.message_id,
                 chat_id=approval["channel_id"],
+                source_chat_id=approval["group_chat_id"],
+                source_message_id=approval["message_id"],
             )
             await query.edit_message_text("✅ Evento aprovado e publicado no canal!")
             await context.bot.send_message(

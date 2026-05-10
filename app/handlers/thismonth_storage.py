@@ -19,7 +19,7 @@ def save_data(data):
     with open(STORAGE_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-def save_post(date: dt, message_id: int, chat_id: int):
+def save_post(date: dt, message_id: int, chat_id: int, source_chat_id: int, source_message_id: int):
    year = str(date.year)
    month = date.strftime("%m")
    day = date.strftime("%d")
@@ -29,6 +29,8 @@ def save_post(date: dt, message_id: int, chat_id: int):
    data[year][month][day].append({
          "chat_id": chat_id,
          "message_id": message_id,
+         "source_chat_id": source_chat_id,
+         "source_message_id": source_message_id,
     })
    save_data(data)
 
@@ -41,3 +43,26 @@ def get_posts_this_month(year: int, month: int):
         for day, entries in month_data.items()
         for entry in month_data[day]
     ]
+def find_and_remove_post(source_chat_id: int, source_message_id: int):
+    data = load_data()
+    for year, months in data.items():
+        for month, days in months.items():
+            for day, entries in days.items():
+                for entry in entries:
+                    if (
+                        entry.get("source_chat_id") == source_chat_id
+                        and entry.get("source_message_id") == source_message_id
+                    ):
+                        entries.remove(entry)
+                        if not entries:
+                            del data[year][month][day]
+                        if not data[year][month]:
+                            del data[year][month]
+                        if not data[year]:
+                            del data[year]
+                        save_data(data)
+                        return entry
+    return None
+
+def purge_all():
+    save_data({})

@@ -17,13 +17,11 @@ async def is_user_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> b
 async def ffthismonth(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update.effective_chat
 
-    if chat.type not in ("group", "supergroup"):
-        await update.message.reply_text("/FFThisMonth só pode ser utilizado em grupos, sowwy owo")
-        return
-
-    if not await is_user_admin(update, context):
-        await update.message.reply_text("Somente administradores podem usar /FFThisMonth, sowwy uwu")
-        return
+    if chat.type in ("group", "supergroup"):
+        if not await is_user_admin(update, context):
+            await update.message.reply_text("Somente administradores podem usar /FFThisMonth, sowwy uwu")
+            return
+    thread_id = update.message.message_thread_id
 
     now = dt.now()
     posts = get_posts_this_month(now.year, now.month)
@@ -31,15 +29,18 @@ async def ffthismonth(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not posts:
         await update.message.reply_text("Não há eventos agendados para este mês ainda. Agende o seu com @FruityFur_Bot! :3")
         return
-    await update.message.reply_text(
-        f"Events for {now.strftime('%B %Y')}:",
+    await context.bot.send_message(
+        chat_id=chat.id,
+        message_thread_id=thread_id,
+        text=f"Eventos do Mês {now.strftime('%B %Y')}:",
         parse_mode="Markdown"
     )
     for day, entry in posts:
         await context.bot.forward_message(
-            chat_id=update.effective_chat.id,
+            chat_id=chat.id,
             from_chat_id=entry["chat_id"],
             message_id=entry["message_id"],
+            message_thread_id=thread_id,
         )
 def build_ffthismonth_handler() -> CommandHandler:
     return CommandHandler("FFThisMonth", ffthismonth)
