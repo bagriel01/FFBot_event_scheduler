@@ -24,7 +24,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def FFPing(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tz = pytz.timezone("America/Sao_Paulo")
     now = dt.now(tz)
-    await update.message.reply_text(f"Bot está online, Data: {now.strftime('%d/%m/%Y %H:%M')} (Horário de Brasília). Versão atual do bot é 1.1.3L (Banana-Sorbet)")
+    await update.message.reply_text(f"Bot está online, Data: {now.strftime('%d/%m/%Y %H:%M')} (Horário de Brasília). Versão atual do bot é 1.2T (Orange)")
 
 async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
