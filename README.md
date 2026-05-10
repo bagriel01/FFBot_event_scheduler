@@ -36,4 +36,3 @@ Setup:
 
 - Versão atual é a 1.2L(Orange)
 
-- 
