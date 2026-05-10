@@ -3,11 +3,13 @@ import asyncio
 from datetime import datetime as dt
 import pytz
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, ChatMemberHandler
 import app
 from app.config import BOT_TOKEN, WEBHOOK_URL, PORT
 from app.handlers.scheduler import build_ffpost_handler, build_approval_handler
 from app.handlers.thismonth import build_ffthismonth_handler
+from app.handlers.purge import build_purge_handler
+from app.handlers.ffremove import build_ffremove_handler
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
@@ -22,7 +24,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def FFPing(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tz = pytz.timezone("America/Sao_Paulo")
     now = dt.now(tz)
-    await update.message.reply_text(f"Bot está online, Data: {now.strftime('%d/%m/%Y %H:%M')} (Horário de Brasília). Versão atual do bot é 1.1.3L (Banana-Sorbet)")
+    await update.message.reply_text(f"Bot está online, Data: {now.strftime('%d/%m/%Y %H:%M')} (Horário de Brasília). Versão atual do bot é 1.2L (Orange)")
 
 async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -36,6 +38,9 @@ async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "📅 */FFThisMonth*\n"
         "Use essa função para mostrar os eventos do mês atual publicados pelo bot.\n\n"
 
+        "🗑️ */FFRemove*\n"
+        "Responda a mensagem original do evento com este comando para removê-lo do canal e do registro.\n\n"
+
         "⛔ */cancel*\n"
         "Cancela a função de criação de evento.\n\n"
 
@@ -43,10 +48,23 @@ async def FFHelp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Verifica se o bot está online e mostra a versão atual.\n\n"
 
         "⚠️ Notas: \n"
-        "- /FFPost e /FFThisMonth só funcionam em grupos.\n"
-        "- Apenas administradores do grupo podem usar as funções.\n"
+        "- /FFPost só funcionam em grupos ou grupos de canais.\n"
+        "- /FFThisMonth só pode ser usado em grupo por administradores, usuários podem chamar essa mensagem pela dm do bot.\n"
+        "- Apenas administradores do grupo podem usar funções.\n"
         "- Certifique-se de que o bot tenha permissão para fixar mensagens\n",)
 
+async def handle_bot_added_to_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    result = update.my_chat_member
+    if not result:
+        return
+    old_status = result.old_chat_member.status
+    new_status = result.new_chat_member.status
+    if old_status in ("left", "kicked") and new_status in ("member", "administrator"):
+        await context.bot.send_message(
+            chat_id=result.chat.id,
+            text="Obrigado por me adicionar ao grupo! Se tiver dúvidas de como utilizar o bot, utilize /FFHelp ou contate o desenvolvedor do " \
+            "bot em @thenightweaver."
+        )
 
 def main():
     if not BOT_TOKEN:
@@ -57,14 +75,16 @@ def main():
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("FFPing", FFPing))
     app.add_handler(CommandHandler("FFHelp", FFHelp))
     app.add_handler(build_approval_handler())
     app.add_handler(build_ffpost_handler())
     app.add_handler(build_ffthismonth_handler())
-
+    app.add_handler(build_purge_handler())
+    for handler in build_ffremove_handler():
+        app.add_handler(handler)
+    app.add_handler(ChatMemberHandler(handle_bot_added_to_group, ChatMemberHandler.MY_CHAT_MEMBER))
     webhook_path = f"/webhook/{BOT_TOKEN}"
     webhook_url = f"{WEBHOOK_URL}{webhook_path}"
 
