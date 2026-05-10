@@ -51,7 +51,7 @@ async def ffremove_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not query or not query.data:
         return
 
-    await query.answer()  # 👈 fixed syntax
+    await query.answer() 
 
     if query.data == "ffremove_cancel":
         await query.edit_message_text("Remoção cancelada.")
