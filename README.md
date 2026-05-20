@@ -1,6 +1,7 @@
 o FFBot é um bot que auxilia furmeets brasileiros a agendar eventos e publicar eles de forma automatizada, para que as pessoas saibam quando e aonde estão acontecendo furmeets ou eventos da furry fandom brasileira.
 
 Features:
+
 📨 */FFPost*
 Use essa função para criar o evento.
 
