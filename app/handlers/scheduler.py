@@ -45,9 +45,9 @@ async def is_user_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> b
     if not chat or user:
         return False
     administrators = await context.bot.get.chat_administrators(chat.id)
-    return any (member.user.id and member.user.id == user.id for member in administrators)
-
+    return any (member.user and member.user.id == user.id for member in administrators)
 #Valida se o usuário é administrador do grupo
+
 def build_google_calendar_link(title: str, event_datetime: dt) -> str:
     start = event_datetime.strftime("%Y%m%dT%H%M%S")
     params = {
@@ -63,7 +63,7 @@ def build_google_calendar_link(title: str, event_datetime: dt) -> str:
 async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     chat = update.effective_chat
     message = update.message
- 
+
     if chat.type not in ("group", "supergroup"):
         await message.reply_text("/FFPost só pode ser utilizado em grupos, sowwy owo.")
         return ConversationHandler.END
@@ -80,14 +80,15 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     chat_username = chat.username
     group_link = f"https://t.me/{chat_username}" if chat_username else None
  
-    #contexto para ser resolvido via dm
+    # Salva contexto para usar na DM
     context.user_data["ffpost_replied_id"] = replied.message_id
     context.user_data["ffpost_chat_id"] = chat.id
     context.user_data["ffpost_group_link"] = group_link
  
+    # Avisa no grupo que vai chamar na DM
     await message.reply_text("Te chamei na DM para concluirmos a publicação do post.")
  
-    #abre a conversa na DM
+    # Abre a conversa na DM
     user = update.effective_user
     await context.bot.send_message(
         chat_id=user.id,
@@ -102,6 +103,7 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
  
     return FFPOST_DATETIME
  
+
 async def ffpost_dm_forward(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     message = update.message
     chat = update.effective_chat
@@ -109,11 +111,18 @@ async def ffpost_dm_forward(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     if chat.type != "private":
         return ConversationHandler.END
  
-    if not message.forward_origin and not message.forward_from_chat and not message.forward_date:
+    if not message.forward_origin:
         return ConversationHandler.END
+
+    origin = message.forward_origin
+    forward_chat = None
+    forward_message_id = None
  
-    forward_chat = getattr(message.forward_from_chat, "id", None)
-    forward_message_id = getattr(message, "forward_from_message_id", None)
+    if hasattr(origin, "chat"):          # MessageOriginChannel / MessageOriginChat
+        forward_chat = origin.chat.id
+        forward_message_id = getattr(origin, "message_id", None)
+    elif hasattr(origin, "sender_chat"): # MessageOriginHiddenUser com sender_chat
+        forward_chat = origin.sender_chat.id
  
     context.user_data["ffpost_replied_id"] = forward_message_id or message.message_id
     context.user_data["ffpost_chat_id"] = forward_chat or message.chat_id
@@ -130,6 +139,8 @@ async def ffpost_dm_forward(update: Update, context: ContextTypes.DEFAULT_TYPE) 
  
     return FFPOST_DATETIME
  
+ 
+
 async def ffpost_receive_datetime(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     raw = update.message.text.strip()
  
