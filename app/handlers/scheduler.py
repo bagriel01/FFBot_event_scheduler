@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlencode
 from datetime import datetime as dt
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
@@ -21,7 +22,7 @@ FFPOST_DATETIME = 0
 #Helpers
 
 def parse_channel_id(channel_id_str):
-    value = value.strip()
+    value = channel_id_str.strip()
     if value.startswith('-') and value[1:].isdigit():
         return int(value)
     if value.isdigit():
@@ -42,9 +43,9 @@ def get_approver_ids(update: Update) -> list[int]:
 async def is_user_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> bool:
     chat = update.effective_chat
     user = update.effective_user
-    if not chat or user:
+    if not chat or not user:
         return False
-    administrators = await context.bot.get.chat_administrators(chat.id)
+    administrators = await context.bot.get_chat_administrators(chat.id)
     return any (member.user and member.user.id == user.id for member in administrators)
 #Valida se o usuário é administrador do grupo
 
