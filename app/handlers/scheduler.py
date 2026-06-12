@@ -89,6 +89,12 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # Avisa no grupo que vai chamar na DM
     await message.reply_text("Te chamei na DM para concluirmos a publicação do post.")
  
+    await context.bot.forward_message(
+        chat_id=user.id,
+        from_chat_id=chat.id,
+        message_id=replied.message_id,
+    )
+
     # Abre a conversa na DM
     user = update.effective_user
     await context.bot.send_message(
