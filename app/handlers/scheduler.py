@@ -170,7 +170,7 @@ async def ffpost_receive_datetime(update: Update, context: ContextTypes.DEFAULT_
 
     gcal_date = event_datetime.strftime("%m/%d/%Y")
     gcal_link = build_google_calendar_link(
-        title="Evento FruityFur",
+        title="Evento Agendado pelo FruityFur Bot",
         event_datetime=event_datetime,
     )
  
