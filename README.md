@@ -7,7 +7,7 @@ Use essa função para criar o evento.
 
 Crie um post em seu grupo contendo as informações de evento;
 
-Responda a mensagem do evento com /FFPost para agendar a publicação do evento pelo bot;
+Responda a mensagem do evento com /FFPost ou envie o post na DM do bot para agendar a publicação do evento pelo bot;
 
 O bot irá solicitar a data do evento e enviará o post para ser aprovado!
 
@@ -35,5 +35,5 @@ Setup:
 3. Rode com python run.py (ou run_local.py)
 
 
-- Versão atual é a 1.2L(Orange)
+- Versão atual é a 1.4L(Raspberry)
 
