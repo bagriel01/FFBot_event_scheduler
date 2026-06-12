@@ -2,7 +2,7 @@ import logging
 from datetime import datetime as dt
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
-    CallBackQueryHandler,
+    CallbackQueryHandler,
     CommandHandler,
     ConversationHandler,
     MessageHandler,
