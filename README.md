@@ -33,4 +33,4 @@
 
 ---
 
-**Versão atual / Current version:** 3.1 (Apricot-Jam)
+**Versão atual / Current version:** 3.1.1 (Apricot-Pie)
