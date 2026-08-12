@@ -4,7 +4,7 @@ Boas vindas e obrigado por utilizar o FFBot! Para começar, me adicione no seu g
 PING = """
 Bot está online.
 Data: {} (Horário de Brasília)
-Versão atual do bot: 3.1 (Apricot-Jam)
+Versão atual do bot: 3.1.1 (Apricot-Pie)
 """
 HELP = """
 📨 */FFPost*
