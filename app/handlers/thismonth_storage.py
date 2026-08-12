@@ -45,7 +45,7 @@ def save_post(date: dt, message_id: int, chat_id: int, source_chat_id: int, sour
 
     logger.info(
         "save_post: entry added for %s/%s/%s (source_chat_id=%s, source_message_id=%s)",
-        year, month, day, entry
+        year, month, day, entry["source_chat_id"], entry["source_message_id"]
     )
 
     save_data(data)
