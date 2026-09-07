@@ -90,6 +90,7 @@ async def ffpost(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     
     context.user_data["ffpost_replied_id"] = replied.message_id
     context.user_data["ffpost_chat_id"] = chat.id
+    context.user_data["ffpost_author"] = user.full_name or user.username
  
 
     await message.reply_text(FFPOST_DM_FORWARD)
@@ -160,8 +161,9 @@ async def ffpost_receive_datetime(update: Update, context: ContextTypes.DEFAULT_
  
     chat_id = context.user_data["ffpost_chat_id"]
     replied_id = context.user_data["ffpost_replied_id"]
+    author = context.user_data.get("ffpost_author", "FruityFur Bot")
     gcal_link = build_google_calendar_link(
-        title="Evento Agendado pelo FruityFur Bot",
+        title="Evento Agendado por {author}",
         event_datetime=event_datetime,
     )
  
@@ -176,6 +178,7 @@ async def ffpost_receive_datetime(update: Update, context: ContextTypes.DEFAULT_
         "event_datetime": event_datetime.strftime("%d/%m/%Y %H:%M"),
         "gcal_link": gcal_link,
         "submitter_id": update.effective_user.id,
+        "author": author,
     }
 
     approver_ids = get_approver_ids(update)
@@ -230,6 +233,7 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
         group_chat_id = approval["group_chat_id"]
         message_id = approval["message_id"]
         gcal_link = approval["gcal_link"]
+        author = approval.get("author", "Desconhecido")
         event_datetime = dt.strptime(approval["event_datetime"], "%d/%m/%Y %H:%M")
  
         if channel_id:
@@ -260,6 +264,7 @@ async def handle_approval_callback(update: Update, context: ContextTypes.DEFAULT
                 chat_id=channel_id,
                 source_chat_id=group_chat_id,
                 source_message_id=message_id,
+                author=author,
             )
  
         await query.edit_message_text(FFPOST_APPROVED)

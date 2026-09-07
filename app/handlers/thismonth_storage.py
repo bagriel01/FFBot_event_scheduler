@@ -28,7 +28,7 @@ def save_data(data):
     with open(STORAGE_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
-def save_post(date: dt, message_id: int, chat_id: int, source_chat_id: int, source_message_id: int):
+def save_post(date: dt, message_id: int, chat_id: int, source_chat_id: int, source_message_id: int, author: str = "Desconhecido"):
     year = str(date.year)
     month = date.strftime("%m")
     day = date.strftime("%d")
@@ -40,6 +40,7 @@ def save_post(date: dt, message_id: int, chat_id: int, source_chat_id: int, sour
         "message_id": message_id,
         "source_chat_id": source_chat_id,
         "source_message_id": source_message_id,
+        "author": author,
     }
     data[year][month][day].append(entry)
 
